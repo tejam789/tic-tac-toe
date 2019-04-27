@@ -25,7 +25,8 @@ class Board extends React.Component {
         this.playerMoves =  ['X','O'];
         this.state = {
             moves: Array(9).fill(null),
-            currentPlayerIndex: 0
+            currentPlayerIndex: 0,
+            gameStatus: 'CurrentPlayer: X'
         }
     }
 
@@ -38,6 +39,10 @@ class Board extends React.Component {
 
     isMoveAlreadyPlayed(i) {
         return this.state.moves[i] != null;
+    }
+
+    updateGameStatus(){
+        return `CurrentPlayer: ${this.playerMoves[this.state.currentPlayerIndex]}`
     }
 
     handleClick(i) {
@@ -55,7 +60,7 @@ class Board extends React.Component {
     }
 
     render() {
-        const status = `CurrentPlayer: ${this.playerMoves[this.state.currentPlayerIndex]}`;
+        const status = this.state.gameStatus;
 
         return (
             <div>
