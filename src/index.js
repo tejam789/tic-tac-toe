@@ -36,7 +36,15 @@ class Board extends React.Component {
         />;
     }
 
+    isMoveAlreadyPlayed(i) {
+        return this.state.moves[i] != null;
+    }
+
     handleClick(i) {
+        if (this.isMoveAlreadyPlayed(i-1)) {
+            alert(`Move ${i} is already been played please select other move`);
+            return;
+        }
         const moves = this.state.moves.slice();
         moves[i-1] = this.playerMoves[this.state.currentPlayerIndex];
         this.setState({
