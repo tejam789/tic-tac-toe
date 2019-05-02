@@ -2,15 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-// class Square extends React.Component {
-//
-//     render() {
-//         return (
-
-//         );
-//     }
-// }
-
 const Square = (props) => {
     return <button
         className="square"
@@ -30,6 +21,32 @@ class Board extends React.Component {
         }
     }
 
+
+    isPlayerWon(moves) {
+        const winningCombinations = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6],
+        ];
+        for (let combinationIdex = 0; combinationIdex < winningCombinations.length; combinationIdex++) {
+            const [a,b,c] = winningCombinations[combinationIdex];
+             if (moves[a] && moves[a] == moves[b] && moves [a] == moves[c]){
+                 return true;
+             }
+        }
+        return false;
+    }
+
+    updateGameStatus(moves) {
+        if(!moves.includes(null)) return 'Game drawn';
+        if(this.isPlayerWon(moves)) return `Player ${this.playerMoves[this.state.currentPlayerIndex]} won`
+    }
+
     renderSquare(i) {
         return <Square
             value={this.state.moves[i-1]}
@@ -41,20 +58,25 @@ class Board extends React.Component {
         return this.state.moves[i] != null;
     }
 
-    updateGameStatus(){
-        return `CurrentPlayer: ${this.playerMoves[this.state.currentPlayerIndex]}`
+    getNextPlayerStatus(){
+        return `CurrentPlayer: ${this.playerMoves[1 - this.state.currentPlayerIndex]}`
     }
 
     handleClick(i) {
-        if (this.isMoveAlreadyPlayed(i-1)) {
-            alert(`Move ${i} is already been played please select other move`);
+        const moves = this.state.moves.slice();
+        if (this.isMoveAlreadyPlayed(i-1) || this.isPlayerWon(moves)) {
             return;
         }
-        const moves = this.state.moves.slice();
+
         moves[i-1] = this.playerMoves[this.state.currentPlayerIndex];
+        let gameStatus = this.updateGameStatus(moves);
+        if (!gameStatus) {
+            gameStatus = this.getNextPlayerStatus()
+        }
         this.setState({
                 moves: moves,
-                currentPlayerIndex: 1-this.state.currentPlayerIndex
+                currentPlayerIndex: 1-this.state.currentPlayerIndex,
+                gameStatus: gameStatus,
             }
             )
     }
